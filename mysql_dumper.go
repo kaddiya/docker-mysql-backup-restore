@@ -1,22 +1,31 @@
 package main
 
 import(
-  "os/exec"
-  "os"  
+  "os"
+  "github.com/kaddiya/docker-mysql-backup-restore/dump"
 )
 
 func main(){
+  //args := make([]string, 0, 2)
+    if(os.Getenv("dumper_db_host") == "" ){
+      panic("the database host is not supplied")
+    }
 
-    args := make([]string, 0, 16)
-    args = append(args, "--host=127.0.0.1")
-    args = append(args, "--port=3306")
-    args = append(args, "--user=deploy")
-    args = append(args, "--password=deploy")
-    args = append(args, "proof")
+    if(os.Getenv("dumper_db_port") == "" ){
+      panic("the database port is not supplied")
+    }
+
+    if(os.Getenv("dumper_db_user") == "" ){
+      panic("the database user is not supplied")
+    }
+    if(os.Getenv("dumper_db_password") == "" ){
+        panic("the database password is not supplied")
+    }
+    if(os.Getenv("dumper_db_name") == "" ){
+       panic("the database name is not supplied")
+    }
+
+    dumper.MysqlDump()
 
 
-    cmd := exec.Command("/usr/local/bin/mysqldump", args...)
-    cmd.Stderr = os.Stderr
-	  cmd.Stdout = os.Stdout
-    cmd.Run()
 }
