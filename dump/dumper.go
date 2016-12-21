@@ -29,12 +29,11 @@ func MysqlDump(){
   args = append(args, fmt.Sprintf("--password=%s",os.Getenv("dumper_db_password")))
   args = append(args, fmt.Sprintf("%s",os.Getenv("dumper_db_name")))
 
-  fmt.Println(os.Getenv("dumper_db_name"))
-  cmd := exec.Command(outbuf.String(), args...)
+  cmd := exec.Command("/usr/local/bin/mysqldump", args...)
   cmd.Stderr = os.Stderr
   cmd.Stdout = os.Stdout
   cmd.Run()
-  
+
 
 
 }
