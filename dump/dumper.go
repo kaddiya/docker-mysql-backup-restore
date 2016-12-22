@@ -7,7 +7,7 @@ import(
   "bytes"
 )
 
-func MysqlDump(){
+func MysqlDump() (stdErrBuf,stdOutBuf bytes.Buffer){
 
   mysqldumpPathcmdArgs:= make([]string, 0, 2)
   mysqldumpPathcmdArgs = append(mysqldumpPathcmdArgs,"mysqldump")
@@ -29,10 +29,13 @@ func MysqlDump(){
   args = append(args, fmt.Sprintf("--password=%s",os.Getenv("dumper_db_password")))
   args = append(args, fmt.Sprintf("%s",os.Getenv("dumper_db_name")))
 
+  var dumpOutBuf, dumperrBuf bytes.Buffer
   cmd := exec.Command("/usr/local/bin/mysqldump", args...)
-  cmd.Stderr = os.Stderr
-  cmd.Stdout = os.Stdout
+  cmd.Stderr = &dumperrBuf
+  cmd.Stdout = &dumpOutBuf
   cmd.Run()
+
+  return dumperrBuf,dumpOutBuf
 
 
 
