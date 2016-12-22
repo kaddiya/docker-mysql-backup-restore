@@ -6,7 +6,11 @@ import (
 )
 
 func main() {
-	if os.Getenv("dumper_db_host") == "" {
+
+  if(os.Getenv("dump_path") == ""){
+    panic("the path for the backups")
+  }
+  if os.Getenv("dumper_db_host") == "" {
 		panic("the database host is not supplied")
 	}
 

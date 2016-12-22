@@ -1,6 +1,8 @@
-FROM tutum/mysql-backup
-ADD backup.sh /backup.sh
-RUN chmod +x /backup.sh
-ADD upload.sh /upload.sh
-RUN chmod +x /backup.sh
-ENTRYPOINT ["/upload.sh"]
+FROM ubuntu:trusty
+MAINTAINER kaddiya <kaddiya@gmail.com>
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends mysql-client && \
+    mkdir /backup
+
+VOLUME ["/backup"]
