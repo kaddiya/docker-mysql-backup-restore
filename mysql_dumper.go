@@ -2,18 +2,17 @@ package main
 
 import (
 	"github.com/kaddiya/docker-mysql-backup-restore/dump"
-	"io/ioutil"
 	"os"
-	//"fmt"
-	"bytes"
+  "io/ioutil"
+  "bytes"
 )
 
 func main() {
 
-	if os.Getenv("dump_path") == "" {
-		panic("the path for the backups")
-	}
-	if os.Getenv("dumper_db_host") == "" {
+  if(os.Getenv("dump_path") == ""){
+    panic("the path for the backups")
+  }
+  if os.Getenv("dumper_db_host") == "" {
 		panic("the database host is not supplied")
 	}
 
@@ -30,34 +29,39 @@ func main() {
 	if os.Getenv("dumper_db_name") == "" {
 		panic("the database name is not supplied")
 	}
-	//create the file path for the dump
-	var outputFilePathNameBuffer bytes.Buffer
-	outputFilePathNameBuffer.WriteString(os.Getenv("dump_path"))
-	outputFilePathNameBuffer.WriteString("/")
-	outputFilePathNameBuffer.WriteString("latestbackup.sql")
 
-	//create an error log for the dump
-	var errorFilePathNameBuffer bytes.Buffer
-	errorFilePathNameBuffer.WriteString(os.Getenv("dump_path"))
-	errorFilePathNameBuffer.WriteString("/")
-	errorFilePathNameBuffer.WriteString("error.log")
+  //create the file path for the dump
+  var outputFilePathNameBuffer bytes.Buffer
+  outputFilePathNameBuffer.WriteString(os.Getenv("dump_path"))
+  outputFilePathNameBuffer.WriteString("/")
+  outputFilePathNameBuffer.WriteString("latestbackup.sql")
 
-	//get the fully qualified path names
-	filePath := outputFilePathNameBuffer.String()
-	errorFilePath := errorFilePathNameBuffer.String()
+  //create an error log for the dump
+  var errorFilePathNameBuffer bytes.Buffer
+  errorFilePathNameBuffer.WriteString(os.Getenv("dump_path"))
+  errorFilePathNameBuffer.WriteString("/")
+  errorFilePathNameBuffer.WriteString("error.log")
 
-	//execute it
-	errorBuf, outputBuf := dumper.MysqlDump()
+  //get the fully qualified path names
+  filePath := outputFilePathNameBuffer.String()
+  errorFilePath := errorFilePathNameBuffer.String()
 
-	//write it
-	ferr := ioutil.WriteFile(filePath, outputBuf.Bytes(), 0644)
-	if ferr != nil {
-		panic(ferr)
-	}
+  //execute it
+  errorBuf,outputBuf := dumper.MysqlDump()
 
-	ferr1 := ioutil.WriteFile(errorFilePath, errorBuf.Bytes(), 0644)
-	if ferr1 != nil {
-		panic(ferr1)
-	}
+
+  //write it
+  ferr := ioutil.WriteFile(filePath, outputBuf.Bytes(), 0644)
+  if ferr !=nil {
+    panic(ferr)
+  }
+
+  ferr1 := ioutil.WriteFile(errorFilePath, errorBuf.Bytes(), 0644)
+  if ferr1 !=nil {
+    panic(ferr1)
+  }
+
+
+
 
 }
