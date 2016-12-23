@@ -45,9 +45,8 @@ func main() {
 	}
 
 	t := time.Now()
-	var archivedDumpFileName = fileutils.GetFullyQualifiedPathOfFile(fmt.Sprintf("%s/archived", os.Getenv("dump_path")), fmt.Sprintf("%d-%s-%d-%d:%d.sql", t.Day(), t.Month(), t.Year(), t.Hour(), t.Minute()))
-
-	latestDumpFilePath := fileutils.GetFullyQualifiedPathOfFile(latestSqlDumpBasePath, "backup.sql")
+	archivedDumpFileName := fileutils.GetFullyQualifiedPathOfFile(fmt.Sprintf("%s/archived", os.Getenv("dump_path")), fmt.Sprintf("%d-%s-%d-%d:%d.sql", t.Day(), t.Month(), t.Year(), t.Hour(), t.Minute()))
+   latestDumpFilePath := fileutils.GetFullyQualifiedPathOfFile(latestSqlDumpBasePath, "backup.sql")
 	errorFilePath := fileutils.GetFullyQualifiedPathOfFile(latestSqlDumpBasePath, "error.log")
 
 	//execute it
@@ -59,21 +58,5 @@ func main() {
 	fileutils.WriteToFile(errorFilePath, errorBuf.Bytes())
 	//write the archive itself
 	fileutils.WriteToFile(archivedDumpFileName, outputBuf.Bytes())
-
-	/*	ferr := ioutil.WriteFile(filePath, outputBuf.Bytes(), 0644)
-		if ferr != nil {
-			panic(ferr)
-		}
-		//write the logs
-		ferr1 := ioutil.WriteFile(errorFilePath, errorBuf.Bytes(), 0644)
-		if ferr1 != nil {
-			panic(ferr1)
-		}
-
-		//write it to the archived folder as well
-		arErr := ioutil.WriteFile(archivedDumpFileName,outputBuf.Bytes(),0644)
-		if arErr !=nil {
-			panic(arErr)
-		}*/
 
 }

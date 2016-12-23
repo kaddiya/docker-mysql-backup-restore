@@ -3,9 +3,10 @@ package fileutils
 import(
   "os"
   "bytes"
- "io/ioutil"
- "fmt"
+  "io/ioutil"
+  "fmt"
 )
+
 func CreateDirectoryIfNotExists(path string, mode os.FileMode)(err error){
 
   if _, err := os.Stat(path); os.IsNotExist(err) {
