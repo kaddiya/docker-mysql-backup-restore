@@ -33,20 +33,22 @@ func main() {
 
 	var latestSqlDumpBasePath = fmt.Sprintf("%s/latest", os.Getenv("dump_path"))
 	var archivedSqlDumpBasePath = fmt.Sprintf("%s/archived", os.Getenv("dump_path"))
-	fmt.Println(latestSqlDumpBasePath)
+	
 	err1 := fileutils.CreateDirectoryIfNotExists(latestSqlDumpBasePath, 0777)
 
 	if err1 != nil {
 		fmt.Println("error in checking the existence of the latest dump directory")
 	}
+
 	err2 := fileutils.CreateDirectoryIfNotExists(archivedSqlDumpBasePath, 0777)
 	if err2 != nil {
 		fmt.Println("error in checking the existence of the archived dump directory")
 	}
 
 	t := time.Now()
-	archivedDumpFileName := fileutils.GetFullyQualifiedPathOfFile(fmt.Sprintf("%s/archived", os.Getenv("dump_path")), fmt.Sprintf("%d-%s-%d-%d:%d.sql", t.Day(), t.Month(), t.Year(), t.Hour(), t.Minute()))
-   latestDumpFilePath := fileutils.GetFullyQualifiedPathOfFile(latestSqlDumpBasePath, "backup.sql")
+	var archiveFilename := fmt.Sprintf("%d-%s-%d-%d:%d.sql", t.Day(), t.Month(), t.Year(), t.Hour(), t.Minute())
+	archivedDumpFileName := fileutils.GetFullyQualifiedPathOfFile(archivedSqlDumpBasePath, archiveFilename)
+  latestDumpFilePath := fileutils.GetFullyQualifiedPathOfFile(latestSqlDumpBasePath, "backup.sql")
 	errorFilePath := fileutils.GetFullyQualifiedPathOfFile(latestSqlDumpBasePath, "error.log")
 
 	//execute it
