@@ -5,10 +5,12 @@ import (
 	"github.com/kaddiya/docker-mysql-backup-restore/dump"
 	"io/ioutil"
 	"os"
+	"fmt"
+	"time"
 )
 
 func main() {
-
+  
 	if os.Getenv("dump_path") == "" {
 		panic("the path for the backups")
 	}
@@ -34,7 +36,8 @@ func main() {
 	var outputFilePathNameBuffer bytes.Buffer
 	outputFilePathNameBuffer.WriteString(os.Getenv("dump_path"))
 	outputFilePathNameBuffer.WriteString("/")
-	outputFilePathNameBuffer.WriteString("latestbackup.sql")
+	t := time.Now()
+	outputFilePathNameBuffer.WriteString(fmt.Sprintf("%d-%s-%d-%d:%d.sql",t.Day(),t.Month(),t.Year(),t.Hour(),t.Minute()))
 
 	//create an error log for the dump
 	var errorFilePathNameBuffer bytes.Buffer
