@@ -3,7 +3,8 @@ package fileutils
 import(
   "os"
   "bytes"
-
+ "io/ioutil"
+ "fmt"
 )
 func CreateDirectoryIfNotExists(path string, mode os.FileMode)(err error){
 
@@ -21,4 +22,11 @@ func GetFullyQualifiedPathOfFile(basePath,fileName string)string {
   fullyQualifiedFilePathBuffer.WriteString(fileName)
   fullyQualifiedFilePath := fullyQualifiedFilePathBuffer.String()
   return fullyQualifiedFilePath
+}
+
+func WriteToFile(filePathWithName string,content []byte){
+  ferr := ioutil.WriteFile(filePathWithName, content, 0777)
+  if ferr != nil {
+    fmt.Println("Error dumping the contents to the file %s",filePathWithName)
+  }
 }

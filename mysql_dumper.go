@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/kaddiya/docker-mysql-backup-restore/dump"
-	"io/ioutil"
 	"os"
 	"fmt"
 	"time"
@@ -48,14 +47,20 @@ func main() {
 	t := time.Now()
   var archivedDumpFileName = fileutils.GetFullyQualifiedPathOfFile(fmt.Sprintf("%s/archived",os.Getenv("dump_path")),fmt.Sprintf("%d-%s-%d-%d:%d.sql",t.Day(),t.Month(),t.Year(),t.Hour(),t.Minute()))
 
-	filePath := fileutils.GetFullyQualifiedPathOfFile(latestSqlDumpBasePath,"backup.sql")
+	latestDumpFilePath := fileutils.GetFullyQualifiedPathOfFile(latestSqlDumpBasePath,"backup.sql")
 	errorFilePath := fileutils.GetFullyQualifiedPathOfFile(latestSqlDumpBasePath,"error.log")
 
 	//execute it
 	errorBuf, outputBuf := dumper.MysqlDump()
 
-	//write the latest
-	ferr := ioutil.WriteFile(filePath, outputBuf.Bytes(), 0644)
+//write the latest
+fileutils.WriteToFile(latestDumpFilePath,outputBuf.Bytes())
+//write error log
+fileutils.WriteToFile(errorFilePath,errorBuf.Bytes())
+//write the archive itself
+fileutils.WriteToFile(archivedDumpFileName,outputBuf.Bytes())
+
+/*	ferr := ioutil.WriteFile(filePath, outputBuf.Bytes(), 0644)
 	if ferr != nil {
 		panic(ferr)
 	}
@@ -69,6 +74,6 @@ func main() {
 	arErr := ioutil.WriteFile(archivedDumpFileName,outputBuf.Bytes(),0644)
 	if arErr !=nil {
 		panic(arErr)
-	}
+	}*/
 
 }
