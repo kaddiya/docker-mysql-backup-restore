@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/kaddiya/docker-mysql-backup-restore/s3"
 	"github.com/kaddiya/docker-mysql-backup-restore/dump"
 	"github.com/kaddiya/docker-mysql-backup-restore/fileutils"
+	"github.com/kaddiya/docker-mysql-backup-restore/s3"
 	"os"
 	"time"
 )
@@ -32,15 +32,15 @@ func main() {
 		panic("the database name is not supplied")
 	}
 
-	if(os.Getenv("s3_access_key") == ""){
-			panic("the s3 access key is not supplied")
+	if os.Getenv("s3_access_key") == "" {
+		panic("the s3 access key is not supplied")
 	}
 
-	if(os.Getenv("s3_secret_key") == ""){
-			panic("the s3 secret key is not supplied")
+	if os.Getenv("s3_secret_key") == "" {
+		panic("the s3 secret key is not supplied")
 	}
 
-	if(os.Getenv("s3_bucket_name") == ""){
+	if os.Getenv("s3_bucket_name") == "" {
 		panic("Please supply the bucket name")
 	}
 
@@ -61,7 +61,7 @@ func main() {
 	t := time.Now()
 	archiveFilename := fmt.Sprintf("%d-%s-%d-%d:%d.sql", t.Day(), t.Month(), t.Year(), t.Hour(), t.Minute())
 	archivedDumpFileName := fileutils.GetFullyQualifiedPathOfFile(archivedSqlDumpBasePath, archiveFilename)
-  latestDumpFilePath := fileutils.GetFullyQualifiedPathOfFile(latestSqlDumpBasePath, "backup.sql")
+	latestDumpFilePath := fileutils.GetFullyQualifiedPathOfFile(latestSqlDumpBasePath, "backup.sql")
 	errorFilePath := fileutils.GetFullyQualifiedPathOfFile(latestSqlDumpBasePath, "error.log")
 
 	//execute it
@@ -75,6 +75,5 @@ func main() {
 	fileutils.WriteToFile(archivedDumpFileName, outputBuf.Bytes())
 
 	s3.UploadFileToS3(outputBuf.Bytes())
-
 
 }

@@ -23,13 +23,14 @@ func UploadFileToS3(content []byte){
       fmt.Printf("bad credentials: %s", err)
     }
     cfg := aws.NewConfig().WithRegion("us-west-1").WithCredentials(creds)
+
     svc := s3.New(session.New(), cfg)
 
     fileType := ".sql"
     path := "/dumps/latest/latest.sql"
     fileBytes := bytes.NewReader(content)
     params := &s3.PutObjectInput{
-      Bucket: aws.String("testBucket"),
+      Bucket: aws.String(os.Getenv("s3_bucket_name")),
       Key: aws.String(path),
       Body: fileBytes,
       ContentType: aws.String(fileType),
