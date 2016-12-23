@@ -1,18 +1,18 @@
 package main
 
 import (
+	"bytes"
 	"github.com/kaddiya/docker-mysql-backup-restore/dump"
+	"io/ioutil"
 	"os"
-  "io/ioutil"
-  "bytes"
 )
 
 func main() {
 
-  if(os.Getenv("dump_path") == ""){
-    panic("the path for the backups")
-  }
-  if os.Getenv("dumper_db_host") == "" {
+	if os.Getenv("dump_path") == "" {
+		panic("the path for the backups")
+	}
+	if os.Getenv("dumper_db_host") == "" {
 		panic("the database host is not supplied")
 	}
 
@@ -30,38 +30,34 @@ func main() {
 		panic("the database name is not supplied")
 	}
 
-  //create the file path for the dump
-  var outputFilePathNameBuffer bytes.Buffer
-  outputFilePathNameBuffer.WriteString(os.Getenv("dump_path"))
-  outputFilePathNameBuffer.WriteString("/")
-  outputFilePathNameBuffer.WriteString("latestbackup.sql")
+	//create the file path for the dump
+	var outputFilePathNameBuffer bytes.Buffer
+	outputFilePathNameBuffer.WriteString(os.Getenv("dump_path"))
+	outputFilePathNameBuffer.WriteString("/")
+	outputFilePathNameBuffer.WriteString("latestbackup.sql")
 
-  //create an error log for the dump
-  var errorFilePathNameBuffer bytes.Buffer
-  errorFilePathNameBuffer.WriteString(os.Getenv("dump_path"))
-  errorFilePathNameBuffer.WriteString("/")
-  errorFilePathNameBuffer.WriteString("error.log")
+	//create an error log for the dump
+	var errorFilePathNameBuffer bytes.Buffer
+	errorFilePathNameBuffer.WriteString(os.Getenv("dump_path"))
+	errorFilePathNameBuffer.WriteString("/")
+	errorFilePathNameBuffer.WriteString("error.log")
 
-  //get the fully qualified path names
-  filePath := outputFilePathNameBuffer.String()
-  errorFilePath := errorFilePathNameBuffer.String()
+	//get the fully qualified path names
+	filePath := outputFilePathNameBuffer.String()
+	errorFilePath := errorFilePathNameBuffer.String()
 
-  //execute it
-  errorBuf,outputBuf := dumper.MysqlDump()
+	//execute it
+	errorBuf, outputBuf := dumper.MysqlDump()
 
+	//write it
+	ferr := ioutil.WriteFile(filePath, outputBuf.Bytes(), 0644)
+	if ferr != nil {
+		panic(ferr)
+	}
 
-  //write it
-  ferr := ioutil.WriteFile(filePath, outputBuf.Bytes(), 0644)
-  if ferr !=nil {
-    panic(ferr)
-  }
-
-  ferr1 := ioutil.WriteFile(errorFilePath, errorBuf.Bytes(), 0644)
-  if ferr1 !=nil {
-    panic(ferr1)
-  }
-
-
-
+	ferr1 := ioutil.WriteFile(errorFilePath, errorBuf.Bytes(), 0644)
+	if ferr1 != nil {
+		panic(ferr1)
+	}
 
 }
