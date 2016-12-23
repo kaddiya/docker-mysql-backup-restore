@@ -1,11 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"github.com/kaddiya/docker-mysql-backup-restore/dump"
-	"io/ioutil"
+	"github.com/kaddiya/docker-mysql-backup-restore/fileutils"
 	"os"
-	//"fmt"
-	"bytes"
+	"time"
 )
 
 func main() {
@@ -30,34 +30,33 @@ func main() {
 	if os.Getenv("dumper_db_name") == "" {
 		panic("the database name is not supplied")
 	}
-	//create the file path for the dump
-	var outputFilePathNameBuffer bytes.Buffer
-	outputFilePathNameBuffer.WriteString(os.Getenv("dump_path"))
-	outputFilePathNameBuffer.WriteString("/")
-	outputFilePathNameBuffer.WriteString("latestbackup.sql")
 
-	//create an error log for the dump
-	var errorFilePathNameBuffer bytes.Buffer
-	errorFilePathNameBuffer.WriteString(os.Getenv("dump_path"))
-	errorFilePathNameBuffer.WriteString("/")
-	errorFilePathNameBuffer.WriteString("error.log")
+	var latestSqlDumpBasePath = fmt.Sprintf("%s/latest", os.Getenv("dump_path"))
+	var archivedSqlDumpBasePath = fmt.Sprintf("%s/archived", os.Getenv("dump_path"))
+	fmt.Println(latestSqlDumpBasePath)
+	err1 := fileutils.CreateDirectoryIfNotExists(latestSqlDumpBasePath, 0777)
 
-	//get the fully qualified path names
-	filePath := outputFilePathNameBuffer.String()
-	errorFilePath := errorFilePathNameBuffer.String()
+	if err1 != nil {
+		fmt.Println("error in checking the existence of the latest dump directory")
+	}
+	err2 := fileutils.CreateDirectoryIfNotExists(archivedSqlDumpBasePath, 0777)
+	if err2 != nil {
+		fmt.Println("error in checking the existence of the archived dump directory")
+	}
+
+	t := time.Now()
+	archivedDumpFileName := fileutils.GetFullyQualifiedPathOfFile(fmt.Sprintf("%s/archived", os.Getenv("dump_path")), fmt.Sprintf("%d-%s-%d-%d:%d.sql", t.Day(), t.Month(), t.Year(), t.Hour(), t.Minute()))
+   latestDumpFilePath := fileutils.GetFullyQualifiedPathOfFile(latestSqlDumpBasePath, "backup.sql")
+	errorFilePath := fileutils.GetFullyQualifiedPathOfFile(latestSqlDumpBasePath, "error.log")
 
 	//execute it
 	errorBuf, outputBuf := dumper.MysqlDump()
 
-	//write it
-	ferr := ioutil.WriteFile(filePath, outputBuf.Bytes(), 0644)
-	if ferr != nil {
-		panic(ferr)
-	}
-
-	ferr1 := ioutil.WriteFile(errorFilePath, errorBuf.Bytes(), 0644)
-	if ferr1 != nil {
-		panic(ferr1)
-	}
+	//write the latest
+	fileutils.WriteToFile(latestDumpFilePath, outputBuf.Bytes())
+	//write error log
+	fileutils.WriteToFile(errorFilePath, errorBuf.Bytes())
+	//write the archive itself
+	fileutils.WriteToFile(archivedDumpFileName, outputBuf.Bytes())
 
 }
