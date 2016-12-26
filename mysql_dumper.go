@@ -44,6 +44,10 @@ func main() {
 		panic("Please supply the bucket name")
 	}
 
+	if os.Getenv("s3_region") ==""{
+		panic("please mention the region that is to be uploaded to")
+	}
+
 	var latestSqlDumpBasePath = fmt.Sprintf("%s/latest", os.Getenv("dump_path"))
 	var archivedSqlDumpBasePath = fmt.Sprintf("%s/archived", os.Getenv("dump_path"))
 

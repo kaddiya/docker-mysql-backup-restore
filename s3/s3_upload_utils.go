@@ -22,7 +22,8 @@ func UploadFileToS3(content []byte){
     if err != nil {
       fmt.Printf("bad credentials: %s", err)
     }
-    cfg := aws.NewConfig().WithRegion("us-west-1").WithCredentials(creds)
+    region:= os.Getenv("s3_region")
+    cfg := aws.NewConfig().WithRegion(region).WithCredentials(creds)
 
     svc := s3.New(session.New(), cfg)
 
@@ -37,6 +38,7 @@ func UploadFileToS3(content []byte){
   }
 
   resp, err := svc.PutObject(params)
+
   if err != nil {
     fmt.Printf("bad response: %s", err)
   }
