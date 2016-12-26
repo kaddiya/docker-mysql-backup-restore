@@ -20,7 +20,7 @@ func main() {
 	if os.Getenv("mode") ==""{
 		panic("please supply the mode to run.BACKUP/RESTORE")
 	}
-
+	mode := os.Getenv("mode")
 	if os.Getenv("dumper_db_host") == "" {
 		panic("the database host is not supplied")
 	}
@@ -72,24 +72,34 @@ func main() {
 		fmt.Println("error in checking the existence of the archived dump directory")
 	}
 
-	t := time.Now()
-	latestDbBackupFileName := fmt.Sprintf("%s-%s", os.Getenv("dumper_db_name"), LATEST_DUMP_NAME)
-	archiveFilename := fmt.Sprintf("%s-%d-%s-%d-%d:%d.sql",os.Getenv("dumper_db_name"), t.Day(), t.Month(), t.Year(), t.Hour(), t.Minute())
-	archivedDumpFileName := fileutils.GetFullyQualifiedPathOfFile(archivedSqlDumpBasePath, archiveFilename)
-	latestDumpFilePath := fileutils.GetFullyQualifiedPathOfFile(latestSqlDumpBasePath, latestDbBackupFileName)
-	errorFilePath := fileutils.GetFullyQualifiedPathOfFile(latestSqlDumpBasePath, "error.log")
+	switch mode {
 
-	//execute it
-	errorBuf, outputBuf := dumper.MysqlDump()
+		case BACKUP_MODE:
+			t := time.Now()
+			latestDbBackupFileName := fmt.Sprintf("%s-%s", os.Getenv("dumper_db_name"), LATEST_DUMP_NAME)
+			archiveFilename := fmt.Sprintf("%s-%d-%s-%d-%d:%d.sql",os.Getenv("dumper_db_name"), t.Day(), t.Month(), t.Year(), t.Hour(), t.Minute())
+			archivedDumpFileName := fileutils.GetFullyQualifiedPathOfFile(archivedSqlDumpBasePath, archiveFilename)
+			latestDumpFilePath := fileutils.GetFullyQualifiedPathOfFile(latestSqlDumpBasePath, latestDbBackupFileName)
+			errorFilePath := fileutils.GetFullyQualifiedPathOfFile(latestSqlDumpBasePath, "error.log")
 
-	//write the latest
-	fileutils.WriteToFile(latestDumpFilePath, outputBuf.Bytes())
-	//write error log
-	fileutils.WriteToFile(errorFilePath, errorBuf.Bytes())
-	//write the archive itself
-	fileutils.WriteToFile(archivedDumpFileName, outputBuf.Bytes())
+			//execute it
+			errorBuf, outputBuf := dumper.MysqlDump()
 
-	s3.UploadFileToS3(outputBuf.Bytes(), "/db-backups/latest", latestDbBackupFileName)
-	s3.UploadFileToS3(outputBuf.Bytes(), "/db-backups/archived", archiveFilename)
+			//write the latest
+			fileutils.WriteToFile(latestDumpFilePath, outputBuf.Bytes())
+			//write error log
+			fileutils.WriteToFile(errorFilePath, errorBuf.Bytes())
+			//write the archive itself
+			fileutils.WriteToFile(archivedDumpFileName, outputBuf.Bytes())
+
+			s3.UploadFileToS3(outputBuf.Bytes(), "/db-backups/latest", latestDbBackupFileName)
+			s3.UploadFileToS3(outputBuf.Bytes(), "/db-backups/archived", archiveFilename)
+
+ 		case RESTORE_MODE:
+			fmt.Println("restoring")
+		default:
+			panic("incorrect mode supplied")
+
+	}
 
 }
