@@ -5,7 +5,6 @@ A tool set to backup and restore the mysql dumps to and from s3.
 1.Docker installed.  
 
 ##Environment variables required  
-`dump_path`: the local path to dump to  
 `dumper_db_host`: the host name of the mysql db  
 `dumper_db_port`: the port where mysql server runs  
 `dumper_db_user`: the user name of the db  
@@ -23,7 +22,7 @@ Suppose there is a DB named `sample` at host `sample.db.com` on port `3306`.The 
 the usage is as follows:  
 
 ```
-docker run  kaddiya/mysql-backup-restore -v /home/user/backups:/backup 
+docker run  kaddiya/mysql-backup-restore -v /home/user/backups:/backups
 --env dumper_db_host=sample.db.com --env dumper_db_port=3306 --env dumper_db_user=backuper \
 --env dumper_db_password="pswd" --env dumper_db_name="sample" --env s3_access_key=access_key \
 --env s3_secret_key="secret_key" --env s3_bucket_name="sample-db-backups" \

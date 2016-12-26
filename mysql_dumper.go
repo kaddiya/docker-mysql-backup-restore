@@ -15,9 +15,7 @@ const (
 
 func main() {
 
-	if os.Getenv("dump_path") == "" {
-		panic("the path for the backups")
-	}
+	
 	if os.Getenv("dumper_db_host") == "" {
 		panic("the database host is not supplied")
 	}
@@ -55,8 +53,8 @@ func main() {
 		panic("path of bucket is not supplied")
 	}
 
-	var latestSqlDumpBasePath = fmt.Sprintf("%s/latest", os.Getenv("dump_path"))
-	var archivedSqlDumpBasePath = fmt.Sprintf("%s/archived", os.Getenv("dump_path"))
+	var latestSqlDumpBasePath = fmt.Sprintf("%s/latest", "/backups")
+	var archivedSqlDumpBasePath = fmt.Sprintf("%s/archived", "/backups")
 
 	err1 := fileutils.CreateDirectoryIfNotExists(latestSqlDumpBasePath, 0777)
 
