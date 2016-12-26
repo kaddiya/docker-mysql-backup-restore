@@ -10,4 +10,4 @@ RUN apt-get update && \
 
 VOLUME ["/backups"]
 
-CMD ["/start.sh"]
+ENTRYPOINT ["/start.sh"]
