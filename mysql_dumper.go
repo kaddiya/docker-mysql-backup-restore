@@ -17,10 +17,10 @@ const (
 
 func main() {
 
-	if os.Getenv("mode") ==""{
+	if os.Getenv("dumper_mode") ==""{
 		panic("please supply the mode to run.BACKUP/RESTORE")
 	}
-	mode := os.Getenv("mode")
+
 	if os.Getenv("dumper_db_host") == "" {
 		panic("the database host is not supplied")
 	}
@@ -72,7 +72,7 @@ func main() {
 		fmt.Println("error in checking the existence of the archived dump directory")
 	}
 
-	switch mode {
+	switch os.Getenv("dumper_mode") {
 
 		case BACKUP_MODE:
 			t := time.Now()
