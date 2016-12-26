@@ -11,10 +11,15 @@ import (
 
 const (
 	LATEST_DUMP_NAME = "latest-backup.sql"
+	BACKUP_MODE = "BACKUP"
+	RESTORE_MODE = "RESTORE"
 )
 
 func main() {
 
+	if os.Getenv("mode") ==""{
+		panic("please supply the mode to run.BACKUP/RESTORE")
+	}
 
 	if os.Getenv("dumper_db_host") == "" {
 		panic("the database host is not supplied")
