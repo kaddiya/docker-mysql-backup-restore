@@ -48,7 +48,7 @@ docker run -v /home/user/backups:/backups \
 --link container.db.com:container.db.com kaddiya/mysql-backup-restore
 ```
 
-##Directory Structure of the backups on the host
+###Directory Structure of the backups on the host
 
 ```
 /backups
@@ -60,7 +60,7 @@ docker run -v /home/user/backups:/backups \
 ```
 
 
-##Directory Structure of the backups on s3
+###Directory Structure of the backups on s3
 
 ```
 /sample-db-backups
