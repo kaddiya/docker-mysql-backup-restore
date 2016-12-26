@@ -15,7 +15,7 @@ const (
 
 func main() {
 
-	
+
 	if os.Getenv("dumper_db_host") == "" {
 		panic("the database host is not supplied")
 	}
@@ -69,7 +69,7 @@ func main() {
 
 	t := time.Now()
 	latestDbBackupFileName := fmt.Sprintf("%s-%s", os.Getenv("dumper_db_name"), LATEST_DUMP_NAME)
-	archiveFilename := fmt.Sprintf("%d-%s-%d-%d:%d.sql", t.Day(), t.Month(), t.Year(), t.Hour(), t.Minute())
+	archiveFilename := fmt.Sprintf("%s-%d-%s-%d-%d:%d.sql",os.Getenv("dumper_db_name"), t.Day(), t.Month(), t.Year(), t.Hour(), t.Minute())
 	archivedDumpFileName := fileutils.GetFullyQualifiedPathOfFile(archivedSqlDumpBasePath, archiveFilename)
 	latestDumpFilePath := fileutils.GetFullyQualifiedPathOfFile(latestSqlDumpBasePath, latestDbBackupFileName)
 	errorFilePath := fileutils.GetFullyQualifiedPathOfFile(latestSqlDumpBasePath, "error.log")
