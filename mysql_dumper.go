@@ -15,9 +15,7 @@ const (
 
 func main() {
 
-	if os.Getenv("dump_path") == "" {
-		panic("the path for the backups")
-	}
+
 	if os.Getenv("dumper_db_host") == "" {
 		panic("the database host is not supplied")
 	}
@@ -55,8 +53,8 @@ func main() {
 		panic("path of bucket is not supplied")
 	}
 
-	var latestSqlDumpBasePath = fmt.Sprintf("%s/latest", os.Getenv("dump_path"))
-	var archivedSqlDumpBasePath = fmt.Sprintf("%s/archived", os.Getenv("dump_path"))
+	var latestSqlDumpBasePath = fmt.Sprintf("%s/latest", "/backups")
+	var archivedSqlDumpBasePath = fmt.Sprintf("%s/archived", "/backups")
 
 	err1 := fileutils.CreateDirectoryIfNotExists(latestSqlDumpBasePath, 0777)
 
@@ -71,7 +69,7 @@ func main() {
 
 	t := time.Now()
 	latestDbBackupFileName := fmt.Sprintf("%s-%s", os.Getenv("dumper_db_name"), LATEST_DUMP_NAME)
-	archiveFilename := fmt.Sprintf("%d-%s-%d-%d:%d.sql", t.Day(), t.Month(), t.Year(), t.Hour(), t.Minute())
+	archiveFilename := fmt.Sprintf("%s-%d-%s-%d-%d:%d.sql",os.Getenv("dumper_db_name"), t.Day(), t.Month(), t.Year(), t.Hour(), t.Minute())
 	archivedDumpFileName := fileutils.GetFullyQualifiedPathOfFile(archivedSqlDumpBasePath, archiveFilename)
 	latestDumpFilePath := fileutils.GetFullyQualifiedPathOfFile(latestSqlDumpBasePath, latestDbBackupFileName)
 	errorFilePath := fileutils.GetFullyQualifiedPathOfFile(latestSqlDumpBasePath, "error.log")

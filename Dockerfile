@@ -6,8 +6,8 @@ RUN chmod +x /start.sh
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends mysql-client && \
-    mkdir /backup
+    mkdir /backups
 
-VOLUME ["/backup"]
+VOLUME ["/backups"]
 
 CMD ["/start.sh"]
