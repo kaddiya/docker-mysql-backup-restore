@@ -60,7 +60,7 @@ docker run -v /home/user/backups:/backups \
 ```
 
 
-##Directory Structure of the on s3
+##Directory Structure of the backups on s3
 
 ```
 /sample-db-backups
