@@ -9,6 +9,10 @@ import (
 	"time"
 )
 
+const (
+	LATEST_DUMP_NAME = "latest-backup.sql"
+)
+
 func main() {
 
 	if os.Getenv("dump_path") == "" {
@@ -41,11 +45,14 @@ func main() {
 	}
 
 	if os.Getenv("s3_bucket_name") == "" {
-		panic("Please supply the bucket name")
+		panic("Bucket name is not supplied")
 	}
 
-	if os.Getenv("s3_region") ==""{
-		panic("please mention the region that is to be uploaded to")
+	if os.Getenv("dumper_s3_region") == "" {
+		panic("Region is not supplied")
+	}
+	if os.Getenv("path_in_bucket") == "" {
+		panic("path of bucket is not supplied")
 	}
 
 	var latestSqlDumpBasePath = fmt.Sprintf("%s/latest", os.Getenv("dump_path"))
@@ -63,9 +70,10 @@ func main() {
 	}
 
 	t := time.Now()
+	latestDbBackupFileName := fmt.Sprintf("%s-%s", os.Getenv("dumper_db_name"), LATEST_DUMP_NAME)
 	archiveFilename := fmt.Sprintf("%d-%s-%d-%d:%d.sql", t.Day(), t.Month(), t.Year(), t.Hour(), t.Minute())
 	archivedDumpFileName := fileutils.GetFullyQualifiedPathOfFile(archivedSqlDumpBasePath, archiveFilename)
-	latestDumpFilePath := fileutils.GetFullyQualifiedPathOfFile(latestSqlDumpBasePath, "backup.sql")
+	latestDumpFilePath := fileutils.GetFullyQualifiedPathOfFile(latestSqlDumpBasePath, latestDbBackupFileName)
 	errorFilePath := fileutils.GetFullyQualifiedPathOfFile(latestSqlDumpBasePath, "error.log")
 
 	//execute it
@@ -78,6 +86,7 @@ func main() {
 	//write the archive itself
 	fileutils.WriteToFile(archivedDumpFileName, outputBuf.Bytes())
 
-	s3.UploadFileToS3(outputBuf.Bytes())
+	s3.UploadFileToS3(outputBuf.Bytes(), "/db-backups/latest", latestDbBackupFileName)
+	s3.UploadFileToS3(outputBuf.Bytes(), "/db-backups/archived", archiveFilename)
 
 }
