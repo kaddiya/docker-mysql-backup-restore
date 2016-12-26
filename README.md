@@ -2,7 +2,9 @@
 A tool set to backup and restore the mysql dumps to and from s3.  
 
 ##Pre-requisites  
-1.Docker installed.  
+1.Docker installed on the VM that is to run this job.  
+2.IAM user with rights to push to s3 and its keys.  
+
 
 ##Environment variables required  
 `dumper_db_host`: the host name of the mysql db  
@@ -18,6 +20,7 @@ A tool set to backup and restore the mysql dumps to and from s3.
 
 
 ##Usage
+###Case 1 where the DB is running outside of a docker container.
 Suppose there is a DB named `sample` at host `sample.db.com` on port `3306`.The user is `backuper` and the password is `pswd`.The access key is `access_key` and the secret key is `secret_key`.The dump has to be uploaded to `sample-db-backups` bucket in the `us-west-1` region.The path in the bucket is `/data`.The path on the local is `/home/user/db-backups`
 the usage is as follows:  
 
@@ -27,4 +30,16 @@ docker run  kaddiya/mysql-backup-restore -v /home/user/backups:/backups
 --env dumper_db_password="pswd" --env dumper_db_name="sample" --env s3_access_key=access_key \
 --env s3_secret_key="secret_key" --env s3_bucket_name="sample-db-backups" \
 --dumper_s3_region="us-west-1" --env path_in_bucket="/data"
+```  
+###Case 2 where the DB is running inside of a docker container.
+Suppose there is a DB named `sample` running inside a docker container named  `container.db.com` on port `3306`.The user is `backuper` and the password is `pswd`.The access key is `access_key` and the secret key is `secret_key`.The dump has to be uploaded to `sample-db-backups` bucket in the `us-west-1` region.The path in the bucket is `/data`.The path on the local is `/home/user/db-backups`
+the usage is as follows:  
+
+```
+docker run  kaddiya/mysql-backup-restore -v /home/user/backups:/backups \
+--env dumper_db_host=container.db.com --env dumper_db_port=3306 --env dumper_db_user=backuper \
+--env dumper_db_password="pswd" --env dumper_db_name="sample" --env s3_access_key=access_key \
+--env s3_secret_key="secret_key" --env s3_bucket_name="sample-db-backups" \
+--dumper_s3_region="us-west-1" --env path_in_bucket="/data" \
+--link container.db.com:container.db.com
 ```
