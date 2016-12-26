@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/kaddiya/docker-mysql-backup-restore/dump"
+	"github.com/kaddiya/docker-mysql-backup-restore/restore"
 	"github.com/kaddiya/docker-mysql-backup-restore/fileutils"
 	"github.com/kaddiya/docker-mysql-backup-restore/s3"
 	"os"
@@ -97,6 +98,10 @@ func main() {
 
  		case RESTORE_MODE:
 			fmt.Println("restoring")
+			//get the file from s3
+			//write it to a temp file
+			//restore it
+			restore.RestoreFromFile("/backups/latest/proof-latest-backup.sql")
 		default:
 			panic("incorrect mode supplied")
 
