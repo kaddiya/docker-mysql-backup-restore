@@ -1,5 +1,5 @@
 # docker-mysql-backup-restore  
-A tool set to backup and restore the mysql dumps to and from s3.  
+A tool set leveraging to backup and restore the mysql dumps to and from s3.It aims to ease up the backup and restore process of databases.
 
 ##Pre-requisites  
 1.Docker installed on the VM that is to run this job.  
@@ -25,7 +25,7 @@ A tool set to backup and restore the mysql dumps to and from s3.
 
 
 ##Usage for BACKUP
-###Case 1 To backup a DB which is running outside of a docker container.
+###Case 1: To backup a DB which is running outside of a docker container.
 Suppose there is a DB named `sample` at host `sample.db.com` on port `3306`.The user is `user` and the password is `pswd`.The access key is `access_key` and the secret key is `secret_key`.The dump has to be uploaded to `sample-db-backups` bucket in the `us-west-1` region.The path in the bucket is `/data`.  
 Then the usage is as follows:  
 
@@ -37,7 +37,7 @@ docker run -v /home/user/backups:/backups \
 --dumper_s3_region="us-west-1" --env path_in_bucket="/data" kaddiya/mysql-backup-restore
 ```  
 
-###Case 2 To backup a DB which is running inside of a docker container.
+###Case 2: To backup a DB which is running inside of a docker container.
 Suppose there is a DB named `sample` running inside a docker container named  `container.db.com` on port `3306`.The user is `user` and the password is `pswd`.The access key is `access_key` and the secret key is `secret_key`.The dump has to be uploaded to `sample-db-backups` bucket in the `us-west-1` region.The path in the bucket is `/data`.  
 Then the usage is as follows:  
 
@@ -51,7 +51,7 @@ docker run -v /home/user/backups:/backups \
 ```
 
 ##Usage for RESTORE  
-###Case 1 To restore a DB  which is running outside of a docker container with the latest backup.
+###Case 1: To restore a DB  which is running outside of a docker container with the latest backup.
 Suppose there is a DB named `sample` at host `sample.standby.db.com` on port `3306`.The user is `user` and the password is `pswd`.The access key is `access_key` and the secret key is `secret_key`.The db has to be restored from the dump uploaded to `/data/latest` in the `sample-db-backups` bucket in the `us-west-1` region.  
 Then the usage is as follows:  
 
@@ -62,7 +62,7 @@ docker run -v /home/user/backups:/backups \
 --env s3_secret_key="secret_key" --env s3_bucket_name="sample-db-backups" --env mode=RESTORE \
 --dumper_s3_region="us-west-1" --env path_in_bucket="/data" kaddiya/mysql-backup-restore
 ```  
-###Case 2 To restore a DB  which is running inside of a docker container with the latest backup.
+###Case 2: To restore a DB  which is running inside of a docker container with the latest backup.
 Suppose there is a DB named `sample` running inside a docker container named  `container.standby.db.com` on port `3306`.The user is `user` and the password is `pswd`.The access key is `access_key` and the secret key is `secret_key`.The db has to be restored from the dump uploaded to `/data/latest` in the `sample-db-backups` bucket in the `us-west-1` region.  
 Then the usage is as follows:  
 
