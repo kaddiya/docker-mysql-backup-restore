@@ -8,6 +8,8 @@ import (
 	"github.com/kaddiya/docker-mysql-backup-restore/s3"
 	"os"
 	"time"
+	"github.com/kaddiya/docker-mysql-backup-restore/models"
+	"io/ioutil"
 )
 
 const (
@@ -59,6 +61,12 @@ func main() {
 		panic("path of bucket is not supplied")
 	}
 
+  client := models.InitMysqlClient(os.Getenv("dumper_db_host"),
+													os.Getenv("dumper_db_port"),
+													os.Getenv("dumper_db_user"),
+													os.Getenv("dumper_db_password"),
+													os.Getenv("dumper_db_name"))
+
 	var latestSqlDumpBasePath = fmt.Sprintf("%s/latest", "/backups")
 	var archivedSqlDumpBasePath = fmt.Sprintf("%s/archived", "/backups")
 
@@ -83,8 +91,9 @@ func main() {
 			latestDumpFilePath := fileutils.GetFullyQualifiedPathOfFile(latestSqlDumpBasePath, latestDbBackupFileName)
 			errorFilePath := fileutils.GetFullyQualifiedPathOfFile(latestSqlDumpBasePath, "error.log")
 
+			args:= models.GetCmdLineArgsFor(client)
 			//execute it
-			errorBuf, outputBuf := dumper.MysqlDump()
+			errorBuf, outputBuf := dumper.MysqlDump(args)
 
 			//write the latest
 			fileutils.WriteToFile(latestDumpFilePath, outputBuf.Bytes())
@@ -97,11 +106,15 @@ func main() {
 			s3.UploadFileToS3(outputBuf.Bytes(), "/db-backups/archived", archiveFilename)
 
  		case RESTORE_MODE:
+			args:= models.GetCmdLineArgsFor(client)
 			fmt.Println("restoring")
 			//get the file from s3
-			//write it to a temp file
-			//restore it
-			restore.RestoreFromFile("/backups/latest/proof-latest-backup.sql")
+			b, err := ioutil.ReadFile("/backups/latest/proof-latest-backup.sql")
+			if err != nil {
+				fmt.Println("something went wrong with reading the backup file")
+				panic(err)
+			}
+			restore.RestoreFromFile(b,args)
 		default:
 			panic("incorrect mode supplied")
 
