@@ -70,13 +70,13 @@ func main() {
 
 	case BACKUP_MODE:
 		t := time.Now()
-		latestDbBackupFileName := fmt.Sprintf("%s-%s.sql", os.Getenv("dumper_db_name"), LATEST_DUMP_NAME)
+		latestDbBackupFileName := fmt.Sprintf("%s-%s", os.Getenv("dumper_db_name"), LATEST_DUMP_NAME)
 		archiveFilename := fmt.Sprintf("%s-%d-%s-%d-%d:%d.sql", os.Getenv("dumper_db_name"), t.Day(), t.Month(), t.Year(), t.Hour(), t.Minute())
 
 		args := models.GetCmdLineArgsFor(client)
 		//execute it
 		_, outputBuf := dumper.MysqlDump(args)
-		
+
 
 		s3WrappperForLatest := models.InitS3Wrapper(os.Getenv("dumper_s3_region"), os.Getenv("s3_access_key"), os.Getenv("s3_secret_key"), os.Getenv("s3_bucket_name"), os.Getenv("path_in_bucket"), fmt.Sprintf("latest/%s", latestDbBackupFileName))
 		s3WrappperForBackup := models.InitS3Wrapper(os.Getenv("dumper_s3_region"), os.Getenv("s3_access_key"), os.Getenv("s3_secret_key"), os.Getenv("s3_bucket_name"), os.Getenv("path_in_bucket"), fmt.Sprintf("archived/%s", archiveFilename))
