@@ -28,7 +28,7 @@ func UploadFileToS3(content []byte,wrapper *models.S3Wrapper){
   fileBytes := bytes.NewReader(content)
     params := &s3.PutObjectInput{
       Bucket: aws.String(wrapper.BucketName),
-      Key: aws.String(wrapper.KeyName),
+      Key: aws.String(getFilePathInS3(wrapper)),
       Body: fileBytes,
   }
 
@@ -55,13 +55,14 @@ func GetFileFromS3(wrapper *models.S3Wrapper)(content []byte,err error){
 
   params := &s3.GetObjectInput{
       Bucket:aws.String(wrapper.BucketName),
-      Key:aws.String(fmt.Sprintf("%s",wrapper.KeyName)),
+      Key:aws.String(getFilePathInS3(wrapper)),
   }
   if err != nil {
     // Print the error, cast err to awserr.Error to get the Code and
     // Message from an error.
     panic(err)
 }
+
   resp, err2 := svc.GetObject(params)
   if err2 !=nil {
     panic(err2)
@@ -69,4 +70,8 @@ func GetFileFromS3(wrapper *models.S3Wrapper)(content []byte,err error){
 
   return ioutil.ReadAll(resp.Body)
 
+}
+
+func getFilePathInS3(s3Wrapper *models.S3Wrapper) string{
+  return fmt.Sprintf("%s/%s",s3Wrapper.PathInBucket,s3Wrapper.KeyName)
 }
