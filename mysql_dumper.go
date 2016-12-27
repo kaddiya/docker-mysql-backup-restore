@@ -102,12 +102,12 @@ func main() {
 			//write the archive itself
 			fileutils.WriteToFile(archivedDumpFileName, outputBuf.Bytes())
 
-			s3.UploadFileToS3(outputBuf.Bytes(), "/db-backups/latest", latestDbBackupFileName)
-			s3.UploadFileToS3(outputBuf.Bytes(), "/db-backups/archived", archiveFilename)
+			s3.UploadFileToS3(outputBuf.Bytes(), fmt.Sprintf("%slatest",os.Getenv("path_in_bucket")), latestDbBackupFileName)
+			s3.UploadFileToS3(outputBuf.Bytes(), fmt.Sprintf("%sarchived",os.Getenv("path_in_bucket")), archiveFilename)
 
  		case RESTORE_MODE:
 			latestDbBackupFileName := fmt.Sprintf("%s-%s", os.Getenv("dumper_db_name"), LATEST_DUMP_NAME)
-			content,_:= s3.GetFileFromS3("/db-backups/latest", latestDbBackupFileName)
+			content,_:= s3.GetFileFromS3(fmt.Sprintf("/%s/latest",os.Getenv("path_in_bucket")), latestDbBackupFileName)
 			args:= models.GetCmdLineArgsFor(client)
 			restore.RestoreFromFile(content,args)
 			fmt.Printf("restored the DB to the state as defined in the %s backup file",latestDbBackupFileName)
