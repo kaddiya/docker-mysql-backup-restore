@@ -50,7 +50,7 @@ docker run -v /home/user/backups:/backups \
 --link container.db.com:container.db.com kaddiya/mysql-backup-restore
 ```
 
-##Usage for RESTORE
+##Usage for RESTORE  
 ###Case 1 To restore a DB  which is running outside of a docker container with the latest backup.
 Suppose there is a DB named `sample` at host `sample.standby.db.com` on port `3306`.The user is `user` and the password is `pswd`.The access key is `access_key` and the secret key is `secret_key`.The db has to be restored from the dump uploaded to `/data/latest` in the `sample-db-backups` bucket in the `us-west-1` region.  
 Then the usage is as follows:  
