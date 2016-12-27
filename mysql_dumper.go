@@ -9,7 +9,6 @@ import (
 	"os"
 	"time"
 	"github.com/kaddiya/docker-mysql-backup-restore/models"
-	"io/ioutil"
 )
 
 const (
@@ -95,6 +94,7 @@ func main() {
 			//execute it
 			errorBuf, outputBuf := dumper.MysqlDump(args)
 
+
 			//write the latest
 			fileutils.WriteToFile(latestDumpFilePath, outputBuf.Bytes())
 			//write error log
@@ -106,15 +106,11 @@ func main() {
 			s3.UploadFileToS3(outputBuf.Bytes(), "/db-backups/archived", archiveFilename)
 
  		case RESTORE_MODE:
+			latestDbBackupFileName := fmt.Sprintf("%s-%s", os.Getenv("dumper_db_name"), LATEST_DUMP_NAME)
+			content,_:= s3.GetFileFromS3("/db-backups/latest", latestDbBackupFileName)
 			args:= models.GetCmdLineArgsFor(client)
-			fmt.Println("restoring")
-			//get the file from s3
-			b, err := ioutil.ReadFile("/backups/latest/proof-latest-backup.sql")
-			if err != nil {
-				fmt.Println("something went wrong with reading the backup file")
-				panic(err)
-			}
-			restore.RestoreFromFile(b,args)
+			restore.RestoreFromFile(content,args)
+			fmt.Printf("restored the DB to the state as defined in the %s backup file",latestDbBackupFileName)
 		default:
 			panic("incorrect mode supplied")
 
