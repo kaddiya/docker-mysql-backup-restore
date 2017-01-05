@@ -30,7 +30,7 @@ Suppose there is a DB named `sample` at host `sample.db.com` on port `3306`.The 
 Then the usage is as follows:  
 
 ```
-docker run -v /home/user/backups:/backups \
+docker run \
 --env dumper_db_host=sample.db.com --env dumper_db_port=3306 --env dumper_db_user=user \
 --env dumper_db_password="pswd" --env dumper_db_name="sample" --env s3_access_key=access_key \
 --env s3_secret_key="secret_key" --env s3_bucket_name="sample-db-backups" --env mode=BACKUP \
@@ -42,7 +42,7 @@ Suppose there is a DB named `sample` running inside a docker container named  `c
 Then the usage is as follows:  
 
 ```
-docker run -v /home/user/backups:/backups \
+docker run  \
 --env dumper_db_host=container.db.com --env dumper_db_port=3306 --env dumper_db_user=user \
 --env dumper_db_password="pswd" --env dumper_db_name="sample" --env s3_access_key=access_key \
 --env s3_secret_key="secret_key" --env s3_bucket_name="sample-db-backups" \
@@ -56,7 +56,7 @@ Suppose there is a DB named `sample` at host `sample.standby.db.com` on port `33
 Then the usage is as follows:  
 
 ```
-docker run -v /home/user/backups:/backups \
+docker run \
 --env dumper_db_host=sample.standby.db.com --env dumper_db_port=3306 --env dumper_db_user=user \
 --env dumper_db_password="pswd" --env dumper_db_name="sample" --env s3_access_key=access_key \
 --env s3_secret_key="secret_key" --env s3_bucket_name="sample-db-backups" --env mode=RESTORE \
