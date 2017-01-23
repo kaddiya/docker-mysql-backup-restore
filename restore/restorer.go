@@ -4,7 +4,6 @@ package restore
 import(
   "os/exec"
   "os"
-  "fmt"
   "bytes"
 )
 
