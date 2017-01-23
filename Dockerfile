@@ -1,7 +1,7 @@
 FROM ubuntu:trusty
 MAINTAINER kaddiya <kaddiya@gmail.com>
 
-ADD docker-mysql-backup-restore_linux_amd64 /execute.sh
+ADD mysql-backup-restore_linux_amd64 /execute.sh
 RUN chmod +x /execute.sh
 
 RUN apt-get update && \

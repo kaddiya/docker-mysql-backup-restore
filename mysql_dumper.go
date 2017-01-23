@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/kaddiya/docker-mysql-backup-restore/dump"
-	"github.com/kaddiya/docker-mysql-backup-restore/models"
-	"github.com/kaddiya/docker-mysql-backup-restore/restore"
-	"github.com/kaddiya/docker-mysql-backup-restore/s3"
+	"github.com/kaddiya/mysql-backup-restore/dump"
+	"github.com/kaddiya/mysql-backup-restore/models"
+	"github.com/kaddiya/mysql-backup-restore/restore"
+	"github.com/kaddiya/mysql-backup-restore/s3"
 	"os"
 	"time"
 )

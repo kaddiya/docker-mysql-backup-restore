@@ -8,7 +8,7 @@ import(
  "github.com/aws/aws-sdk-go/service/s3"
  "github.com/aws/aws-sdk-go/aws/session"
  "io/ioutil"
- "github.com/kaddiya/docker-mysql-backup-restore/models"
+ "github.com/kaddiya/mysql-backup-restore/models"
 )
 
 func UploadFileToS3(content []byte,wrapper *models.S3Wrapper){
