@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/kaddiya/mysql-backup-restore/dump"
 	"github.com/kaddiya/mysql-backup-restore/models"
 	"github.com/kaddiya/mysql-backup-restore/restore"
@@ -76,7 +75,6 @@ func main() {
 		args := models.GetCmdLineArgsFor(client)
 		//execute it
 		_, outputBuf := dumper.MysqlDump(args)
-
 
 		s3WrappperForLatest := models.InitS3Wrapper(os.Getenv("dumper_s3_region"), os.Getenv("s3_access_key"), os.Getenv("s3_secret_key"), os.Getenv("s3_bucket_name"), os.Getenv("path_in_bucket"), fmt.Sprintf("latest/%s", latestDbBackupFileName))
 		s3WrappperForBackup := models.InitS3Wrapper(os.Getenv("dumper_s3_region"), os.Getenv("s3_access_key"), os.Getenv("s3_secret_key"), os.Getenv("s3_bucket_name"), os.Getenv("path_in_bucket"), fmt.Sprintf("archived/%s", archiveFilename))
