@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/kaddiya/mysql-backup-restore/dump"
 	"github.com/kaddiya/mysql-backup-restore/models"
 	"github.com/kaddiya/mysql-backup-restore/restore"
